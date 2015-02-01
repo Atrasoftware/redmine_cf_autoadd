@@ -5,7 +5,7 @@
     html>body #sortable li { height: 1.5em; line-height: 1.2em; }
 </style>
 
-<% issue_cfs = CustomField.where("type= 'IssueCustomField' and field_format in ('int', 'string') ")  %>
+<% issue_cfs = CustomField.where("type= 'IssueCustomField' and field_format in ('string') ")  %>
 <p>
     <ul id="sortable">
       <% issue_cfs.each do |issue_cf| %>
@@ -16,16 +16,17 @@
       <% end  %>
     </ul>
 </p>
-<script>
-    $(function(){
-        $(".check_box").children('input').change(function() {
-            $(".check_box").children('input').prop('checked', false);
-            $(this).prop('checked', true);
-        });
-    })
-</script>
+
 <p>
   <label>auto add globally:</label>
   <%= select_tag "settings[auto_increment_globally]",
                  options_for_select([[true, true],[false, false]], @settings['auto_increment_globally']||true) %>
+</p>
+
+<p>
+    <ul id="sortable">
+        <li class="ui-state-default check_box">
+          <%= check_box_tag("settings[auto_add_uniquness]", true, @settings['auto_add_uniquness']) %> auto add uniquness.
+        </li>
+    </ul>
 </p>
