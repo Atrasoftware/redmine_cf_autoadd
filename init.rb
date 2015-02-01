@@ -12,3 +12,7 @@ Redmine::Plugin.register :redmine_cf_autoadd do
    }, :partial => 'settings/auto_increment'
 end
 require 'redmine_auto_add_hook'
+
+Rails.application.config.to_prepare do
+  Issue.send(:include, Patches::AutoAddIssuePatch)
+end

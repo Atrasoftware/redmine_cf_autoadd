@@ -4,7 +4,6 @@ class RedmineAutoAddHook < Redmine::Hook::ViewListener
 
     settings = Setting.send "plugin_redmine_cf_autoadd"
     issues_cfs = CustomField.where("type= 'IssueCustomField' and field_format in ('string')").select{|cf| settings[cf.name] == "true" }
-    uniqueness = settings['auto_add_uniquness'] || false
     issues_cfs.each do |issue_cfs|
       detect_cf = issue.visible_custom_field_values.detect{|cf| cf.custom_field == issue_cfs}
       if detect_cf
@@ -25,15 +24,6 @@ class RedmineAutoAddHook < Redmine::Hook::ViewListener
 
           max = cf.value rescue [Time.now.strftime("%y"), 0].join('_')
           max = max.succ
-          if uniqueness
-=begin
-            check_uniq = CustomValue.where("customized_type= 'issue' and custom_field_id = ? and value = ?",
-                               issue_cfs.id, max)
-            unless check_uniq.empty?
-                # TODO add validation for uniqueness
-            end
-=end
-          end
         end
         detect_cf.value = max
       end
