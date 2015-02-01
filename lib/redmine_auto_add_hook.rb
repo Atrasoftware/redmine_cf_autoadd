@@ -23,7 +23,10 @@ class RedmineAutoAddHook < Redmine::Hook::ViewListener
           end
 
           max = cf.value rescue [Time.now.strftime("%y"), 0].join('_')
-          max = max.succ
+          arr = max.split('').reverse
+          arr.pop(2)
+          max = [Time.now.strftime("%y"), arr.reverse.join('').succ].join('')
+          #max = max.succ
         end
         detect_cf.value = max
       end
