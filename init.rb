@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_cf_autoadd do
 
   settings :default => {
         'auto_increment_globally'=> true,
-        'auto_add_uniquness' => false
+        'redmine_default_auto_add_value' => "#{[Time.now.strftime("%y"), '001'].join('_')}"
    }, :partial => 'settings/auto_increment'
 end
 require 'redmine_auto_add_hook'

@@ -30,11 +30,14 @@ module  Patches
                  .order("id DESC").first
                end
 
-               max = cf.value rescue [Time.now.strftime("%y"), 0].join('_')
+               max = cf.value rescue nil
                if settings["cf_auto_increment_#{issue_cfs.name}"] == "true"
+=begin
                  arr = max.split('').reverse
                  arr.pop(2)
                  max = [Time.now.strftime("%y"), arr.reverse.join('').succ].join('')
+=end
+                 max = max.nil? ? settings['redmine_default_auto_add_value'] || [Time.now.strftime("%y"), '001'].join('_') : max.succ
                end
              end
              detect_cf.value = max
