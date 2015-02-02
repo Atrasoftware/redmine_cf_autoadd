@@ -15,4 +15,5 @@ require 'redmine_auto_add_hook'
 
 Rails.application.config.to_prepare do
   Issue.send(:include, Patches::AutoAddIssuePatch)
+  IssuesController.send(:include, Patches::AutoAddIssuesControllerPatch)
 end

@@ -2,31 +2,23 @@
 <style>
     #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
     #sortable li { margin: 0 5px 5px 5px; padding: 5px; font-size: 1.2em; height: 1.5em; }
-    html>body #sortable li { height: 1.5em; line-height: 1.2em; }
+    html>body #sortable li { height: 2.5em; line-height: 1.2em; }
 </style>
 
 <% issue_cfs = CustomField.where("type= 'IssueCustomField' and field_format in ('string') ")  %>
-<p>
-    <ul id="sortable">
-      <% issue_cfs.each do |issue_cf| %>
-          <li class="ui-state-default check_box">
-            <%= check_box_tag("settings[#{issue_cf.name}]", true, @settings[issue_cf.name]) %>
-            <%= issue_cf.name %>
-          </li>
-      <% end  %>
-    </ul>
-</p>
+<div>
+  <ul id="sortable">
+  <% issue_cfs.each do |issue_cf| %>
+     <li class="ui-state-default">
+       <%= check_box_tag("settings[#{issue_cf.name}]", true, @settings[issue_cf.name]) %> <%= issue_cf.name %> <br/>
 
-<p>
-  <label>auto add globally:</label>
-  <%= select_tag "settings[auto_increment_globally]",
-                 options_for_select([[true, true],[false, false]], @settings['auto_increment_globally']||true) %>
-</p>
-
-<p>
-    <ul id="sortable">
-        <li class="ui-state-default check_box">
-          <%= check_box_tag("settings[auto_add_uniquness]", true, @settings['auto_add_uniquness']) %> auto add uniquness.
-        </li>
-    </ul>
-</p>
+       <%= check_box_tag("settings[cf_uniq_#{issue_cf.name}]", true, @settings["cf_uniq_#{issue_cf.name}"]) %> verify uniquness
+       <%= check_box_tag("settings[cf_auto_increment_#{issue_cf.name}]", true, @settings["cf_auto_increment_#{issue_cf.name}"]) %> auto increment
+       <%= check_box_tag("settings[cf_global_#{issue_cf.name}]", true, @settings["cf_global_#{issue_cf.name}"]) %> In all projects.
+     </li>
+  <% end  %>
+  </ul>
+</div>
+<script>
+  $('li').children('input:first').change()
+</script>
