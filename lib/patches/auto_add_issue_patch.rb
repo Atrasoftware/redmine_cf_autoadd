@@ -44,7 +44,7 @@ module  Patches
             detect_cf = visible_custom_field_values.detect{|cf| cf.custom_field == issue_cfs}
             if detect_cf
               if uniqueness == 'true'
-                check_uniq = CustomValue.where("customized_type= 'issue' and custom_field_id = ? and value = ? and and customized_id <> ?",
+                check_uniq = CustomValue.where("customized_type= 'issue' and custom_field_id = ? and value = ? and customized_id <> ?",
                                                issue_cfs.id, detect_cf.value, id)
               else
                 # check uniqueness for that project
