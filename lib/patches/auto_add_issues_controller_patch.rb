@@ -24,7 +24,7 @@ module  Patches
                                         issues_id, issue_cfs.id).order("id DESC").first
              end
                max = cf.value rescue nil
-       
+
                if settings["cf_auto_increment_#{issue_cfs.name}"] == "true"
                  max = max.nil? ? issue_cfs.default_value : max.succ
                else
