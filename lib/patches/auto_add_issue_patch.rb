@@ -27,7 +27,7 @@ module  Patches
               end
 
               unless check_uniq.empty?
-                errors[:base]<< "#{issue_cfs.name} must be uniq."
+                errors[:base]<< "#{issue_cfs.name} must be unique!"
                 return false
               end
             end
