@@ -1,3 +1,3 @@
 # English strings go here for Rails i18n
-en:
+es:
    value_must_be_uniq: "debe ser único!"
