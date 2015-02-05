@@ -10,29 +10,31 @@ module  Patches
         append_before_filter :auto_add_cfs, :only=> [:new, :copy, :update_form]
 
        def auto_add_cfs
-         settings = Setting.send "plugin_redmine_cf_autoadd"
-         issues_cfs = CustomField.where("type= 'IssueCustomField' and field_format in ('string')").select{|cf| settings[cf.name] == "true" }
-         issues_cfs.each do |issue_cfs|
-           detect_cf = @issue.visible_custom_field_values.detect{|cf| cf.custom_field == issue_cfs}
-           if detect_cf
-             if settings["cf_global_#{issue_cfs.name}"] == "true" # global increment
-                 cf = issue_cfs.custom_values.where("value is not null and value <> '' ").order("id DESC").first
-             else
-                 project = @issue.project
-                 issues_id = project.issues.map(&:id)
-                 cf = CustomValue.where("customized_type= 'issue' and customized_id in(?) and custom_field_id = ? and (value is not null and value <> '' ) ",
-                                        issues_id, issue_cfs.id).order("id DESC").first
-             end
-               max = cf.value rescue nil
-
-               if settings["cf_auto_increment_#{issue_cfs.name}"] == "true"
-                 max = max.nil? ? issue_cfs.default_value : max.succ
+         if @issue.id.nil?
+           settings = Setting.send "plugin_redmine_cf_autoadd"
+           issues_cfs = CustomField.where("type= 'IssueCustomField' and field_format in ('string')").select{|cf| settings[cf.name] == "true" }
+           issues_cfs.each do |issue_cfs|
+             detect_cf = @issue.visible_custom_field_values.detect{|cf| cf.custom_field == issue_cfs}
+             if detect_cf
+               if settings["cf_global_#{issue_cfs.name}"] == "true" # global increment
+                   cf = issue_cfs.custom_values.where("value is not null and value <> '' ").order("id DESC").first
                else
-                 max = issue_cfs.default_value if max.nil?
+                   project = @issue.project
+                   issues_id = project.issues.map(&:id)
+                   cf = CustomValue.where("customized_type= 'issue' and customized_id in(?) and custom_field_id = ? and (value is not null and value <> '' ) ",
+                                          issues_id, issue_cfs.id).order("id DESC").first
                end
-             detect_cf.value = max
-           end
+                 max = cf.value rescue nil
 
+                 if settings["cf_auto_increment_#{issue_cfs.name}"] == "true"
+                   max = max.nil? ? issue_cfs.default_value : max.succ
+                 else
+                   max = issue_cfs.default_value if max.nil?
+                 end
+               detect_cf.value = max
+             end
+
+           end
          end
        end
 
