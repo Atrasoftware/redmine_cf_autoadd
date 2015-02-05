@@ -17,20 +17,20 @@ module  Patches
              detect_cf = @issue.visible_custom_field_values.detect{|cf| cf.custom_field == issue_cfs}
              if detect_cf
                if settings["cf_global_#{issue_cfs.name}"] == "true" # global increment
-                   cf = issue_cfs.custom_values.where("value is not null and value <> '' ").order("id DESC").first
+                   cfs = issue_cfs.custom_values.where("value is not null and value <> '' ").order("id DESC")
                else
                    project = @issue.project
                    issues_id = project.issues.map(&:id)
-                   cf = CustomValue.where("customized_type= 'issue' and customized_id in(?) and custom_field_id = ? and (value is not null and value <> '' ) ",
-                                          issues_id, issue_cfs.id).order("id DESC").first
+                   cfs = CustomValue.where("customized_type= 'issue' and customized_id in(?) and custom_field_id = ? and (value is not null and value <> '' ) ",
+                                          issues_id, issue_cfs.id).order("id DESC")
                end
-                 max = cf.value rescue nil
+               max = cfs.map(&:value).max rescue nil
 
-                 if settings["cf_auto_increment_#{issue_cfs.name}"] == "true"
-                   max = max.nil? ? issue_cfs.default_value : max.succ
-                 else
-                   max = issue_cfs.default_value if max.nil?
-                 end
+               if settings["cf_auto_increment_#{issue_cfs.name}"] == "true"
+                 max = max.nil? ? issue_cfs.default_value : max.succ
+               else
+                 max = issue_cfs.default_value if max.nil?
+               end
                detect_cf.value = max
              end
 
